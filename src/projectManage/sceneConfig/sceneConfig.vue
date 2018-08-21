@@ -31,33 +31,35 @@
             <el-tab-pane label="模块列表" name="first" style="margin: 0 0 -10px;">
                 <div style="margin: 0 0 -20px;">
                 </div>
-                <el-table :data="tableData" stripe>
-                    <el-table-column
-                            prop="num"
-                            label="编号"
-                            width="80">
-                    </el-table-column>
-                    <el-table-column
-                            prop="name"
-                            label="模块名称"
-                            width="650">
-                    </el-table-column>
-                    <el-table-column
-                            label="操作"
-                    >
-                        <template slot-scope="scope">
-                            <el-button type="primary" icon="el-icon-edit" size="mini"
-                                       @click.native="editSceneConfig(tableData[scope.$index]['id'])">编辑
-                            </el-button>
-                            <!--<el-button type="primary" icon="el-icon-tickets" size="mini"-->
-                            <!--@click.native="copyModel(tableData[scope.$index]['id'])">复制-->
-                            <!--</el-button>-->
-                            <el-button type="danger" icon="el-icon-delete" size="mini"
-                                       @click.native="sureView(delConfig,tableData[scope.$index]['id'])">删除
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                <el-scrollbar wrap-class="scrollbarList">
+                    <el-table :data="tableData" stripe>
+                        <el-table-column
+                                prop="num"
+                                label="编号"
+                                width="80">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="模块名称"
+                                width="650">
+                        </el-table-column>
+                        <el-table-column
+                                label="操作"
+                        >
+                            <template slot-scope="scope">
+                                <el-button type="primary" icon="el-icon-edit" size="mini"
+                                           @click.native="editSceneConfig(tableData[scope.$index]['id'])">编辑
+                                </el-button>
+                                <!--<el-button type="primary" icon="el-icon-tickets" size="mini"-->
+                                <!--@click.native="copyModel(tableData[scope.$index]['id'])">复制-->
+                                <!--</el-button>-->
+                                <el-button type="danger" icon="el-icon-delete" size="mini"
+                                           @click.native="sureView(delConfig,tableData[scope.$index]['id'])">删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-scrollbar>
                 <div class="block" style="left:68%; position: relative;">
                     <el-pagination
                             @current-change="handleCurrentChange"
@@ -120,21 +122,19 @@
                         </el-option>
                     </el-select>
                     <el-table :data="configData.variable" style="width:100%" size="mini" stripe>
-                        <el-table-column property="key" label="Key" header-align="center"
-                                         style="font-size: 16px;" width="250">
+                        <el-table-column property="key" label="Key" header-align="center" minWidth="100">
                             <template slot-scope="scope">
                                 <el-input v-model="scope.row.key" size="medium">
                                 </el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column property="value" label="Value" header-align="center" width="330">
+                        <el-table-column property="value" label="Value" header-align="center" minWidth="200">
                             <template slot-scope="scope">
                                 <el-input v-model="scope.row.value" size="medium">
                                 </el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column label="备注" header-align="center"
-                                         style="font-size: 16px;" width="280">
+                        <el-table-column label="备注" header-align="center" minWidth="80">
                             <template slot-scope="scope">
                                 <el-input v-model="scope.row.remark" size="medium">
                                 </el-input>
@@ -301,6 +301,9 @@
                 this.$axios.post('/api/api/config/del', {'id': id}).then((response) => {
                         this.messageShow(this, response);
                         this.form.configName = '';
+                        if ((this.currentPage - 1) * this.sizePage + 1 === this.total) {
+                            this.currentPage = this.currentPage - 1
+                        }
                         this.findSceneConfig();
                     }
                 )
